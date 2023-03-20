@@ -1,11 +1,15 @@
 package com.eudagama12.example.pdfgenerator.service;
 
-import com.eudagama12.example.pdfgenerator.dto.*;
-import com.itextpdf.text.*;
+import com.eudagama12.example.pdfgenerator.dto.CreateDocumentRequest;
+import com.eudagama12.example.pdfgenerator.dto.DocumentContent;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -14,24 +18,24 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.eudagama12.example.pdfgenerator.service.ElementUtil.*;
+
 @Service
 @Getter
 @Setter
 @Slf4j
 public class DocumentService {
 
-    private Font font;
+    @Value("${localPath.pdf}")
+    private String pdfLocalPath;
 
     public void generatePDF(CreateDocumentRequest createDocumentRequest) throws IOException, DocumentException {
         log.debug("Initiate PDF");
-        String pdfFile = "src/main/resources/data/" + createDocumentRequest.getDocumentName() + ".pdf";
+        String pdfFile = createDocumentRequest.getDocumentName() + ".pdf";
 
         Document document = new Document();
-        PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(pdfFile)));
+        PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(pdfLocalPath + pdfFile)));
         log.info("Created PDF: {}", pdfFile);
-
-        font = defaultFont();
-        log.info("Font set success");
 
         document.open();
 
@@ -50,29 +54,21 @@ public class DocumentService {
         LinkedList<Element> elementLinkedList = new LinkedList<>();
 
         for (DocumentContent documentContent : documentOrderContentList) {
-            Font elementFont = font;
             switch (documentContent.getType()) {
                 case "Paragraph":
-                    log.info("Found paragraph element");
-                    if (documentContent.getElementFont() != null) {
-                        elementFont = formatFont(documentContent.getElementFont());
-                    }
-                    Paragraph paragraph = new Paragraph(documentContent.getText(), elementFont);
-                    elementLinkedList.add(paragraph);
+                    addParagraphElement(elementLinkedList, documentContent);
                     break;
                 case "Anchor":
-                    log.info("Found anchor element");
-                    if (documentContent.getElementFont() != null) {
-                        elementFont = formatFont(documentContent.getElementFont());
-                    }
-                    Anchor anchor = new Anchor(documentContent.getText() + "\n", elementFont);
-                    anchor.setReference(documentContent.getReference());
-                    elementLinkedList.add(anchor);
+                    addAnchorElement(elementLinkedList, documentContent);
+                    break;
+                case "Image":
+                    addImageElement(elementLinkedList, documentContent);
+                    break;
+                case "Table":
+                    addTableElement(elementLinkedList, documentContent);
                     break;
                 case "Whitespace":
-                    log.info("Found whitespace element");
-                    Chunk chunk = new Chunk("\n");
-                    elementLinkedList.add(chunk);
+                    addWhitespaceElement(elementLinkedList);
                     break;
                 default:
                     log.error("Unknown element type: {}", documentContent.getType());
@@ -82,18 +78,4 @@ public class DocumentService {
 
         return elementLinkedList;
     }
-
-    private static Font formatFont(ElementFont elementFont) {
-        log.debug("Setting font");
-        DocumentFontColor fontColor = elementFont.getDocumentFontColor();
-        BaseColor baseColor = new BaseColor(fontColor.getRed(), fontColor.getGreen(), fontColor.getBlue());
-
-        return FontFactory.getFont(FontFactory.HELVETICA, elementFont.getFontSize(), baseColor);
-    }
-
-    private static Font defaultFont() {
-        log.debug("Setting default font");
-        return FontFactory.getFont(FontFactory.HELVETICA, 12, BaseColor.BLACK);
-    }
-
 }
