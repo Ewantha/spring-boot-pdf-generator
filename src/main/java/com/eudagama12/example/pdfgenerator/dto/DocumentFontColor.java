@@ -1,18 +1,18 @@
 package com.eudagama12.example.pdfgenerator.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class DocumentFontColor {
-    @JsonProperty("Red")
+    @JsonProperty(value = "Red")
     int red;
-    @JsonProperty("Green")
+    @JsonProperty(value = "Green")
     int green;
-    @JsonProperty("Blue")
+    @JsonProperty(value = "Blue")
     int blue;
 }
