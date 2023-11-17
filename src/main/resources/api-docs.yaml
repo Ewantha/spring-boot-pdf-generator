@@ -11,13 +11,13 @@ externalDocs:
   description: itext Website
   url: https://itextpdf.com/
 servers:
-- url: http://localhost:8080
-  description: Generated server url
+  - url: http://localhost:8080
+    description: Generated server url
 paths:
   /document/pdf:
     post:
       tags:
-      - document-controller
+        - document-controller
       summary: Create a PDF Document
       operationId: generateDocument
       requestBody:
@@ -33,7 +33,7 @@ components:
   schemas:
     CreateDocumentRequest:
       required:
-      - DocumentName
+        - DocumentName
       type: object
       properties:
         DocumentName:
@@ -43,21 +43,38 @@ components:
         Content:
           type: array
           items:
-            $ref: '#/components/schemas/DocumentContent'
-    DocumentContent:
+            anyOf:
+              - $ref: '#/components/schemas/DocumentContentParagraph'
+              - $ref: '#/components/schemas/DocumentContentAnchor'
+              - $ref: '#/components/schemas/DocumentContentImage'
+              - $ref: '#/components/schemas/DocumentContentTable'
+              - $ref: '#/components/schemas/DocumentContentWhitespace'
+    DocumentContentParagraph:
       required:
-      - Type
+        - Type
       type: object
       properties:
         Type:
           type: string
           description: Type of document element to be created.
           enum:
-          - Paragraph
-          - Anchor
-          - Image
-          - Table
-          - Whitespace
+            - Paragraph
+        Font:
+          $ref: '#/components/schemas/ElementFont'
+        Text:
+          type: string
+          description: Input text.
+          example: Lorem ipsum...
+    DocumentContentAnchor:
+      required:
+        - Type
+      type: object
+      properties:
+        Type:
+          type: string
+          description: Type of document element to be created.
+          enum:
+            - Anchor
         Font:
           $ref: '#/components/schemas/ElementFont'
         Text:
@@ -69,6 +86,38 @@ components:
           description: Only for anchor elements and image elements. Set url or image
             source.
           example: www.google.com
+    DocumentContentImage:
+      required:
+        - Type
+      type: object
+      properties:
+        Type:
+          type: string
+          description: Type of document element to be created.
+          enum:
+            - Image
+        Reference:
+          type: string
+          description: Only for anchor elements and image elements. Set url or image
+            source.
+          example: www.google.com
+        Scale:
+          type: number
+          description: Only for image and table elements.
+          format: float
+          example: 1.2
+    DocumentContentTable:
+      required:
+        - Type
+      type: object
+      properties:
+        Type:
+          type: string
+          description: Type of document element to be created.
+          enum:
+            - Table
+        Font:
+          $ref: '#/components/schemas/ElementFont'
         Scale:
           type: number
           description: Only for image and table elements.
@@ -93,6 +142,16 @@ components:
             description: Only for table elements.
         HeaderFont:
           $ref: '#/components/schemas/ElementFont'
+    DocumentContentWhitespace:
+      required:
+        - Type
+      type: object
+      properties:
+        Type:
+          type: string
+          description: Type of document element to be created.
+          enum:
+            - Whitespace
     DocumentFontColor:
       type: object
       properties:
@@ -122,21 +181,21 @@ components:
           description: Font type
           default: Helvetica
           enum:
-          - Courier
-          - Courier-Bold
-          - Courier-Oblique
-          - Courier-BoldOblique
-          - Helvetica
-          - Helvetica-Bold
-          - Helvetica-Oblique
-          - Helvetica-BoldOblique
-          - Symbol
-          - Times
-          - Times-Roman
-          - Times-Bold
-          - Times-Italic
-          - Times-BoldItalic
-          - ZapfDingbats
+            - Courier
+            - Courier-Bold
+            - Courier-Oblique
+            - Courier-BoldOblique
+            - Helvetica
+            - Helvetica-Bold
+            - Helvetica-Oblique
+            - Helvetica-BoldOblique
+            - Symbol
+            - Times
+            - Times-Roman
+            - Times-Bold
+            - Times-Italic
+            - Times-BoldItalic
+            - ZapfDingbats
         Size:
           type: integer
           description: Font size
