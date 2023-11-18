@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.eudagama12.example</groupId>
 	<artifactId>pdf-generator</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>pdf-generator</name>
 	<description>Sample spring boot application to generate pdf document</description>
 	<properties>
