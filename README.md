@@ -1,7 +1,9 @@
 # PDF Generator
+
 ## _spring-boot-pdf-generator_
 
-Application to create a PDF using an API. This can be used as reference for creating PDF documents using the iText java library.
+Application to create a PDF using an API. This can be used as reference for creating PDF documents using the iText java
+library.
 
 ## API Documentation
 
@@ -221,7 +223,6 @@ components:
 
 ```
 
-
 [Open API Docs](http://localhost:8080/v3/api-docs)
 
 [Swagger UI](http://localhost:8080/swagger-ui/index.html)
@@ -231,6 +232,7 @@ components:
 Documents will be created at ${localPath.pdf}
 
 Sample curl request to create a PDF document.
+
 ```curl
 curl --location --request POST 'http://localhost:8080/document/pdf' \
 --header 'Content-Type: application/json' \
@@ -239,9 +241,15 @@ curl --location --request POST 'http://localhost:8080/document/pdf' \
     "Content": []
 }'
 ```
+
+Fill the _Content_ json array with the required elements given below.
+
+Each PDF element is added using a JSON object via the API
+
 ### Content
 
 - Paragraph
+
 ```json
 {
   "Type": "Paragraph",
@@ -260,69 +268,73 @@ curl --location --request POST 'http://localhost:8080/document/pdf' \
 ```
 
 - Anchor
+
 ```json
 {
-    "Type": "Anchor",
-    "Font": {
-        "Type": "Helvetica",
-        "Size": 12,
-        "Style": 0,
-        "Color": {
-            "Red": 0,
-            "Green": 0,
-            "Blue": 0
-        }
-    },
-    "Text": "Lorem ipsum...",
-    "Reference": "www.google.com"
+  "Type": "Anchor",
+  "Font": {
+    "Type": "Helvetica",
+    "Size": 12,
+    "Style": 0,
+    "Color": {
+      "Red": 0,
+      "Green": 0,
+      "Blue": 0
+    }
+  },
+  "Text": "Lorem ipsum...",
+  "Reference": "www.google.com"
 }
 ```
 
 - Image
+
 ```json
 {
-    "Type": "Image",
-    "Reference": "www.google.com",
-    "Scale": 1.2
+  "Type": "Image",
+  "Reference": "www.google.com",
+  "Scale": 1.2
 }
 ```
 
 - Table
+
 ```json
 {
-      "Type": "Table",
-      "Font": {
-        "Type": "Helvetica",
-        "Size": 12,
-        "Style": 0,
-        "Color": {
-          "Red": 0,
-          "Green": 0,
-          "Blue": 0
-        }
-      },
-      "Scale": 1.2,
-      "Columns": 2,
-      "Data": [
-        "string"
-      ],
-      "Header": [
-        "string"
-      ],
-      "HeaderFont": {
-        "Type": "Helvetica",
-        "Size": 12,
-        "Style": 0,
-        "Color": {
-          "Red": 0,
-          "Green": 0,
-          "Blue": 0
-        }
-      }
+  "Type": "Table",
+  "Font": {
+    "Type": "Helvetica",
+    "Size": 12,
+    "Style": 0,
+    "Color": {
+      "Red": 0,
+      "Green": 0,
+      "Blue": 0
     }
+  },
+  "Scale": 1.2,
+  "Columns": 2,
+  "Data": [
+    "string"
+  ],
+  "Header": [
+    "string"
+  ],
+  "HeaderFont": {
+    "Type": "Helvetica",
+    "Size": 12,
+    "Style": 0,
+    "Color": {
+      "Red": 0,
+      "Green": 0,
+      "Blue": 0
+    }
+  }
+}
 ```
 
 - Whitespace
+
 ```json
 {
   "Type": "Whitespace"
@@ -332,6 +344,7 @@ curl --location --request POST 'http://localhost:8080/document/pdf' \
 ### Example
 
 1. Create a simple document with a heading and two paragraphs.
+
 ```curl
 curl --location --request POST 'http://localhost:8080/document/pdf' \
 --header 'Content-Type: application/json' \
@@ -389,5 +402,70 @@ curl --location --request POST 'http://localhost:8080/document/pdf' \
     ]
 }'
 ```
+
+![img.png](img.png)
+
+2. Create a table
+
+```curl
+curl --location --request POST 'http://localhost:8080/document/pdf' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "DocumentName": "Document2",
+    "Content": [
+        {
+            "Type": "Paragraph",
+            "Font": {
+                "Type": "Helvetica-Bold",
+                "Size": 24,
+                "Style": 4,
+                "Color": {
+                    "Red": 0,
+                    "Green": 20,
+                    "Blue": 160
+                }
+            },
+            "Text": "Shoping Cart"
+        },
+        {
+            "Type": "Whitespace"
+        },
+        {
+            "Type": "Table",
+            "Font": {
+                "Type": "Helvetica",
+                "Size": 12,
+                "Style": 0,
+                "Color": {
+                    "Red": 0,
+                    "Green": 0,
+                    "Blue": 0
+                }
+            },
+            "Scale": 80,
+            "Columns": 2,
+            "Data": [
+                "Milk", "12.00",
+                "Chocholate", "20.00"
+            ],
+            "Header": [
+                "Item",
+                "Price"
+            ],
+            "HeaderFont": {
+                "Type": "Helvetica-Bold",
+                "Size": 12,
+                "Style": 0,
+                "Color": {
+                    "Red": 0,
+                    "Green": 0,
+                    "Blue": 0
+                }
+            }
+        }
+    ]
+}'
+```
+![img_1.png](img_1.png)
 
 
