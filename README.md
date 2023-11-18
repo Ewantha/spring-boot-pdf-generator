@@ -403,7 +403,7 @@ curl --location --request POST 'http://localhost:8080/document/pdf' \
 }'
 ```
 
-![img.png](img.png)
+![img.png](src/main/resources/readmeExample1.png)
 
 2. Create a table
 
@@ -466,6 +466,6 @@ curl --location --request POST 'http://localhost:8080/document/pdf' \
     ]
 }'
 ```
-![img_1.png](img_1.png)
+![img_1.png](src/main/resources/readmeExample2.png)
 
 
