@@ -5,7 +5,6 @@ import com.eudagama12.example.pdfgenerator.service.DocumentService;
 import com.itextpdf.text.DocumentException;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +15,11 @@ import java.io.IOException;
 @Slf4j
 public class DocumentController {
 
-    @Autowired
-    DocumentService documentService;
+    final DocumentService documentService;
+
+    public DocumentController(DocumentService documentService) {
+        this.documentService = documentService;
+    }
 
     @Operation(summary = "Create a PDF Document")
     @PostMapping("/pdf")
