@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
@@ -24,7 +25,7 @@ public class DocumentController {
     @Operation(summary = "Create a PDF Document")
     @PostMapping("/pdf")
     @ResponseStatus(HttpStatus.CREATED)
-    public void generateDocument(@RequestBody CreateDocumentRequest createDocumentRequest) throws DocumentException, IOException {
+    public void generateDocument(@Valid @RequestBody CreateDocumentRequest createDocumentRequest) throws DocumentException, IOException {
         log.info("Received request: {}", createDocumentRequest);
         documentService.generatePDF(createDocumentRequest);
     }
