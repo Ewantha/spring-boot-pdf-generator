@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Getter
@@ -13,6 +14,7 @@ import java.util.List;
 @ToString
 public class CreateDocumentRequest {
 
+    @NotBlank(message = "Document name cannot be blank")
     @Schema(description = "Name of the PDF document", example = "HelloWorld", required = true)
     @JsonProperty("DocumentName")
     private String documentName;
